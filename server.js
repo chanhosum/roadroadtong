@@ -13,7 +13,7 @@ app.get('/test', function(req, res) {
 })
 
 app.get('/json', function(req, res) {
-	res.json({"aaa":"aaa"});
+	res.json({"test1":"aaa"});
   //res.json({notes: "This is your notebook. Edit this to start saving your notes!"})
 })
 
