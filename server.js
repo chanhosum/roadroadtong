@@ -4,6 +4,7 @@ var app = express()
  
 app.get('/notes', function(req, res) {
 	res.write("hello world3");
+	res.end();
   //res.json({notes: "This is your notebook. Edit this to start saving your notes!"})
 })
  
