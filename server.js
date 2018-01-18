@@ -12,4 +12,10 @@ app.get('/test', function(req, res) {
   //res.json({notes: "This is your notebook. Edit this to start saving your notes!"})
 })
 
+app.get('/json', function(req, res) {
+	res.json({"aaa":"aaa"}});
+  //res.json({notes: "This is your notebook. Edit this to start saving your notes!"})
+})
+
+
 app.listen(process.env.PORT||8099);
