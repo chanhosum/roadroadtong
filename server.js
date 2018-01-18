@@ -2,10 +2,9 @@ var express = require('express')
  
 var app = express()
  
-app.get('/notes', function(req, res) {
-	res.write("hello world3");
-	res.end();
+app.get('/', function(req, res) {
+	res.end("hello world vvvv");
   //res.json({notes: "This is your notebook. Edit this to start saving your notes!"})
 })
  
-app.listen(3000)
+app.listen(process.env.PORT||8099);
