@@ -1,3 +1,9 @@
+/*
+git add .
+git commit -m "json"
+git push origin master
+
+*/
 var express = require('express')
 var bodyParser = require('body-parser');
 var app = express();
@@ -21,8 +27,8 @@ app.get('/json', function(req, res) {
 
 app.post('/post', jsonParser, function(req, res) {
     console.log(req.body);
-    JSON.stringify(req.body);
-    res.end(JSON.stringify(req.body));
+    res.end("okkkkkk");
+    //res.end(JSON.stringify(req.body));
     //res.json(req.body);
 })
 
@@ -31,8 +37,20 @@ app.post('/db', jsonParser, function(req, res) {
     MongoClient.connect(mongourl, function(err, db) {
         switch (obj.operation) {
             case "insert":
-            	delete obj.operation;
-                db.collection('roadroadtong').insert(obj);
+                delete obj.operation;
+                db.collection('roadroadtong').insert(obj, function(err, result) {
+                    assert.equal(err, null);
+                    console.log("Insert was successful!");
+                    res.end("ok");
+                });
+                break;
+            case "delete":
+                delete obj.operation;
+                db.collection('roadroadtong').insert(obj, function(err, result) {
+                    assert.equal(err, null);
+                    console.log("Insert was successful!");
+                    res.end("ok");
+                });
                 break;
         }
     });
