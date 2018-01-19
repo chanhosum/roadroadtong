@@ -34,26 +34,83 @@ app.post('/post', jsonParser, function(req, res) {
 
 app.post('/db', jsonParser, function(req, res) {
     var obj = req.body;
-    MongoClient.connect(mongourl, function(err, db) {
-        switch (obj.operation) {
-            case "insert":
-                delete obj.operation;
-                db.collection('roadroadtong').insert(obj, function(err, result) {
+    switch (obj.operation) {
+        case "insert":
+            delete obj.operation;
+            console.log("insert");
+            console.log(obj);
+            MongoClient.connect(mongourl, function(err, database) {
+            	assert.equal(err,null);
+                console.log("errrr:");
+                console.log(err);
+                const myDB = database.db('anson')
+                myDB.collection('roadroadtong').insert(obj, function(err, result) {
+                    database.close();
                     assert.equal(err, null);
                     console.log("Insert was successful!");
-                    res.end("ok");
+                    res.end("insert ok");
                 });
-                break;
-            case "delete":
-                delete obj.operation;
-                db.collection('roadroadtong').insert(obj, function(err, result) {
+            });
+            break;
+        case "remove":
+            delete obj.operation;
+            console.log("remove");
+            console.log(obj);
+            MongoClient.connect(mongourl, function(err, database) {
+            	assert.equal(err,null);
+                console.log("errrr:");
+                console.log(err);
+                const myDB = database.db('anson')
+                myDB.collection('roadroadtong').remove(obj, function(err, result) {
+                    database.close();
                     assert.equal(err, null);
-                    console.log("Insert was successful!");
-                    res.end("ok");
+                    console.log("remove was successful!");
+                    res.end("remove ok");
                 });
-                break;
-        }
-    });
+            });
+            break;
+        case "update":
+            var updateVal = obj.updateVal;
+            delete obj.operation;
+            delete obj.updateVal;
+            console.log("remove");
+            console.log(obj);
+            MongoClient.connect(mongourl, function(err, database) {
+            	assert.equal(err,null);
+                console.log("errrr:");
+                console.log(err);
+                const myDB = database.db('anson')
+                myDB.collection('roadroadtong').update(obj, { $set: updateVal }, function(err, result) {
+                    database.close();
+                    assert.equal(err, null);
+                    console.log("update was successful!");
+                    res.end("update ok");
+                });
+            });
+            break;
+        case "find":
+            delete obj.operation;
+            console.log("find");
+            console.log(obj);
+            MongoClient.connect(mongourl, function(err, database) {
+            	assert.equal(err,null);
+                console.log("errrr:");
+                console.log(err);
+                const myDB = database.db('anson')
+                cursor = myDB.collection('roadroadtong').find(obj);
+                var objj = [];
+                cursor.each(function(err, doc) {
+                    assert.equal(err, null);
+                    if (doc != null) {
+                        objj.push(doc);
+                    } else {
+                        res.json(objj);
+                    }
+                });
+                database.close();
+            });
+            break;
+    }
 })
 
 
