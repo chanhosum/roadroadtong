@@ -56,6 +56,7 @@ app.post('/db', jsonParser, function(req, res) {
             break;
         case "remove":
             delete obj.operation;
+            delete obj.collection;
             console.log("remove");
             console.log(obj);
             MongoClient.connect(mongourl, function(err, database) {
@@ -75,6 +76,7 @@ app.post('/db', jsonParser, function(req, res) {
             var updateVal = obj.updateVal;
             delete obj.operation;
             delete obj.updateVal;
+            delete obj.collection;
             console.log("remove");
             console.log(obj);
             MongoClient.connect(mongourl, function(err, database) {
@@ -92,6 +94,7 @@ app.post('/db', jsonParser, function(req, res) {
             break;
         case "find":
             delete obj.operation;
+            delete obj.collection;
             console.log("find");
             console.log(obj);
             MongoClient.connect(mongourl, function(err, database) {
