@@ -3,6 +3,8 @@ git add .
 git commit -m "json"
 git push origin master
 
+curl -H "Content-Type: application/json" -X POST -d '{"username":"xyz","password":"xyz"}' https://testdbdb.herokuapp.com/post
+
 */
 var express = require('express')
 var bodyParser = require('body-parser');
