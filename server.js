@@ -34,9 +34,11 @@ app.post('/post', jsonParser, function(req, res) {
 
 app.post('/db', jsonParser, function(req, res) {
     var obj = req.body;
+    var myCollection = obj.collection;
     switch (obj.operation) {
         case "insert":
             delete obj.operation;
+            delete obj.collection;
             console.log("insert");
             console.log(obj);
             MongoClient.connect(mongourl, function(err, database) {
@@ -44,7 +46,7 @@ app.post('/db', jsonParser, function(req, res) {
                 console.log("errrr:");
                 console.log(err);
                 const myDB = database.db('anson')
-                myDB.collection('roadroadtong').insert(obj, function(err, result) {
+                myDB.collection(myCollection).insert(obj, function(err, result) {
                     database.close();
                     assert.equal(err, null);
                     console.log("Insert was successful!");
@@ -61,7 +63,7 @@ app.post('/db', jsonParser, function(req, res) {
                 console.log("errrr:");
                 console.log(err);
                 const myDB = database.db('anson')
-                myDB.collection('roadroadtong').remove(obj, function(err, result) {
+                myDB.collection(myCollection).remove(obj, function(err, result) {
                     database.close();
                     assert.equal(err, null);
                     console.log("remove was successful!");
@@ -80,7 +82,7 @@ app.post('/db', jsonParser, function(req, res) {
                 console.log("errrr:");
                 console.log(err);
                 const myDB = database.db('anson')
-                myDB.collection('roadroadtong').update(obj, { $set: updateVal }, function(err, result) {
+                myDB.collection(myCollection).update(obj, { $set: updateVal }, function(err, result) {
                     database.close();
                     assert.equal(err, null);
                     console.log("update was successful!");
@@ -97,7 +99,7 @@ app.post('/db', jsonParser, function(req, res) {
                 console.log("errrr:");
                 console.log(err);
                 const myDB = database.db('anson')
-                cursor = myDB.collection('roadroadtong').find(obj);
+                cursor = myDB.collection(myCollection).find(obj);
                 var objj = [];
                 cursor.each(function(err, doc) {
                     assert.equal(err, null);
