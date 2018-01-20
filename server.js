@@ -110,7 +110,7 @@ app.post('/db', jsonParser, function(req, res) {
                     if (doc != null) {
                         objj.push(doc);
                     } else {
-                        res.json(objj);
+                        res.json({result:objj});
                     }
                 });
                 database.close();
