@@ -27,9 +27,8 @@ app.get('/json', function(req, res) {
 
 app.post('/post', jsonParser, function(req, res) {
     console.log(req.body);
-    res.end("okkkkkk");
     //res.end(JSON.stringify(req.body));
-    //res.json(req.body);
+    res.json(req.body);
 })
 
 app.post('/db', jsonParser, function(req, res) {
