@@ -30,7 +30,7 @@ app.get('/json', function(req, res) {
 app.post('/post', jsonParser, function(req, res) {
     console.log(req.body);
     //res.end(JSON.stringify(req.body));
-    res.json({aaa:"bbb"});
+    res.json({aaa:"bbb wifi"});
 })
 
 app.post('/db', jsonParser, function(req, res) {
