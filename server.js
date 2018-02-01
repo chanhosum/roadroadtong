@@ -30,8 +30,40 @@ app.get('/json', function(req, res) {
 app.post('/post', jsonParser, function(req, res) {
     console.log(req.body);
     //res.end(JSON.stringify(req.body));
-    res.json({aaa:"bbb wifi"});
+    res.json({ aaa: "bbb wifi" });
 })
+
+app.post('/register', jsonParser, function(req, res) {
+    var obj = req.body;
+    console.log(obj);
+    MongoClient.connect(mongourl, function(err, database) {
+        assert.equal(err, null);
+        console.log("errrr:");
+        console.log(err);
+        const myDB = database.db('anson');
+        cursor = myDB.collection("account").find({ account_id: obj.account_id });
+        var objj = [];
+        cursor.each(function(err, doc) {
+            assert.equal(err, null);
+            if (doc != null) {
+                objj.push(doc);
+            } else {
+                console.log(objj);
+                if(objj.length==0){
+                    console.log("not repeat");
+                }else{
+                    console.log("already exist");
+                }
+            }
+        });
+
+    });
+    //username password email phone;
+});
+
+app.post('/login', jsonParser, function(req, res) {
+    var obj = req.body;
+});
 
 app.post('/db', jsonParser, function(req, res) {
     var obj = req.body;
@@ -43,10 +75,10 @@ app.post('/db', jsonParser, function(req, res) {
             console.log("insert");
             console.log(obj);
             MongoClient.connect(mongourl, function(err, database) {
-            	assert.equal(err,null);
+                assert.equal(err, null);
                 console.log("errrr:");
                 console.log(err);
-                const myDB = database.db('anson')
+                const myDB = database.db('anson');
                 myDB.collection(myCollection).insert(obj, function(err, result) {
                     database.close();
                     assert.equal(err, null);
@@ -61,7 +93,7 @@ app.post('/db', jsonParser, function(req, res) {
             console.log("remove");
             console.log(obj);
             MongoClient.connect(mongourl, function(err, database) {
-            	assert.equal(err,null);
+                assert.equal(err, null);
                 console.log("errrr:");
                 console.log(err);
                 const myDB = database.db('anson')
@@ -81,7 +113,7 @@ app.post('/db', jsonParser, function(req, res) {
             console.log("remove");
             console.log(obj);
             MongoClient.connect(mongourl, function(err, database) {
-            	assert.equal(err,null);
+                assert.equal(err, null);
                 console.log("errrr:");
                 console.log(err);
                 const myDB = database.db('anson')
@@ -99,7 +131,7 @@ app.post('/db', jsonParser, function(req, res) {
             console.log("find");
             console.log(obj);
             MongoClient.connect(mongourl, function(err, database) {
-            	assert.equal(err,null);
+                assert.equal(err, null);
                 console.log("errrr:");
                 console.log(err);
                 const myDB = database.db('anson')
@@ -110,7 +142,7 @@ app.post('/db', jsonParser, function(req, res) {
                     if (doc != null) {
                         objj.push(doc);
                     } else {
-                        res.json({result:objj});
+                        res.json({ result: objj });
                     }
                 });
                 database.close();
