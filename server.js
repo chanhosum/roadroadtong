@@ -49,10 +49,16 @@ app.post('/register', jsonParser, function(req, res) {
                 objj.push(doc);
             } else {
                 console.log(objj);
-                if(objj.length==0){
+                if (objj.length == 0) {
                     console.log("not repeat");
-                }else{
+                    myDB.collection("account").insert(obj, function(err, result) {
+                        assert.equal(err, null);
+                        console.log("added new account");
+                        res.end("ok");
+                    });
+                } else {
                     console.log("already exist");
+                    res.end("exist");
                 }
             }
         });
@@ -63,6 +69,29 @@ app.post('/register', jsonParser, function(req, res) {
 
 app.post('/login', jsonParser, function(req, res) {
     var obj = req.body;
+    console.log(obj);
+    MongoClient.connect(mongourl, function(err, database) {
+        assert.equal(err, null);
+        console.log("errrr:");
+        console.log(err);
+        const myDB = database.db('anson');
+        cursor = myDB.collection("account").find({ account_id: obj.account_id });
+        var objj = [];
+        cursor.each(function(err, doc) {
+            assert.equal(err, null);
+            console.log(doc)
+            if (doc != null) {
+                console.log(doc);
+                if(doc.password == obj.password){
+                    res.end("ok");
+                }else{
+                    res.end("wrong");
+                }
+            } else {
+                res.end("notExist");
+            }
+        });
+    });
 });
 
 app.post('/db', jsonParser, function(req, res) {
