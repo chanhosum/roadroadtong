@@ -82,9 +82,9 @@ app.post('/login', jsonParser, function(req, res) {
             console.log(doc)
             if (doc != null) {
                 console.log(doc);
-                if(doc.password == obj.password){
+                if (doc.password == obj.password) {
                     res.end("ok");
-                }else{
+                } else {
                     res.end("wrong");
                 }
             } else {
@@ -92,6 +92,12 @@ app.post('/login', jsonParser, function(req, res) {
             }
         });
     });
+});
+
+app.post('/coord', jsonParser, function(req, res) {
+    var obj = req.body;
+    console.log(obj);
+    res.end("ok");
 });
 
 app.post('/db', jsonParser, function(req, res) {
