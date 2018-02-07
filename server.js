@@ -1,6 +1,6 @@
 /*
 git add .
-git commit -m "json"
+git commit -m "coord"
 git push origin master
 
 curl -H "Content-Type: application/json" -X POST -d '{"username":"xyz","password":"xyz"}' https://testdbdb.herokuapp.com/post
@@ -188,7 +188,11 @@ app.post('/coord', jsonParser, function(req, res) {
                     }
                 }
                 console.log(result);
-                res.end(result.toString());
+                if(result.length!=0){
+                    res.end(result.toString());
+                }else{
+                    res.end("Sorry, no any road nearby");
+                }     
             }
         });
     });
