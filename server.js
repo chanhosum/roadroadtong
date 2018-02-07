@@ -154,18 +154,18 @@ app.post('/coord', jsonParser, function(req, res) {
                 var allCoordSet = [];
                 for (i in doc.coord) {
                     var allCoord = findAllCoord(doc.coord[i].lineE.long, doc.coord[i].lineS.long, doc.coord[i].lineE.lat, doc.coord[i].lineS.lat);
-                    console.log(allCoord);
+                    //console.log(allCoord);
                     allCoordSet = allCoordSet.concat(allCoord);
-                    console.log("whyyyyy");
-                    console.log(allCoordSet);
+                    //console.log("whyyyyy");
+                    //console.log(allCoordSet);
                 }
                 objj[doc.roadName] = allCoordSet;
             } else {
-                console.log(objj);
+                //console.log(objj);
                 for (key in objj) {
                     console.log(key);
                     for (i = 0; i < objj[key].length; i++) {
-                        console.log(objj[key][i]);
+                        //console.log(objj[key][i]);
                         var userLat = parseFloat(obj.lat);
                         var userLong = parseFloat(obj.long);
                         var targetLat = parseFloat(objj[key][i].lat);
@@ -182,7 +182,7 @@ app.post('/coord', jsonParser, function(req, res) {
                         if(tf==true){
                             console.log("found!");
                             result.push(key);
-                            console.log(key);
+                            //console.log(key);
                             break;
                         }
                     }
