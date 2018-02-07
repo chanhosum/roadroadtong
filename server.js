@@ -19,10 +19,6 @@ app.get('/', function(req, res) {
     res.end("hello world vvvv");
 })
 
-app.get('/test', function(req, res) {
-    res.end("hello world vvvv test");
-})
-
 app.get('/json', function(req, res) {
     res.json({ "test1": "aaa" });
 })
