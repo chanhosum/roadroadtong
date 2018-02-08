@@ -165,7 +165,7 @@ app.post('/coord', jsonParser, function(req, res) {
                 for (key in objj) {
                     console.log(key);
                     for (i = 0; i < objj[key].length; i++) {
-                        //console.log(objj[key][i]);
+                        console.log(objj[key][i]);
                         var userLat = parseFloat(obj.lat);
                         var userLong = parseFloat(obj.long);
                         var targetLat = parseFloat(objj[key][i].lat);
