@@ -139,6 +139,92 @@ app.post('/coord', jsonParser, function(req, res) {
         }
         return anArray;
     }
+
+    function findAccident(obj, callback) {
+        console.log("findAccident");
+        MongoClient.connect(mongourl, function(err, database) {
+            const myDB = database.db('anson');
+            var accidentObj = {};
+
+            function recursive1(i) {
+                console.log("I:::");
+                console.log(i);
+                if (i == obj.length) {
+
+                    console.log(accidentObj);
+                    callback(accidentObj);
+                    return;
+                } else {
+                    console.log("else");
+                    if (obj[i].accident.length == 0) {
+                        i++;
+                        recursive1(i);
+                        return;
+                    }
+                    var counter = 0;
+                    for (j = 0; j < obj[i].accident.length; j++) {
+                        myDB.collection("accident").findOne({ id: obj[i].accident[j] }, function(err, result) {
+                            if (err) throw err;
+                            console.log(result);
+                            counter++;
+                            accidentObj[result.id] = result;
+                            console.log(accidentObj);
+                            if (counter == obj[i].accident.length) {
+                                console.log("xcczxczdczx");
+                                i++;
+                                recursive1(i);
+                                return;
+                            }
+                        });
+                    }
+                }
+            }
+            recursive1(0);
+        });
+    }
+
+    function findRoadDetails(res, callback) {
+        var roadObjArray = [];
+        MongoClient.connect(mongourl, function(err, database) {
+            const myDB = database.db('anson');
+            var counter = 0;
+            for (i = 0; i < res.length; i++) {
+                myDB.collection("road").findOne({ roadName: res[i] }, function(err, result) {
+                    if (err) throw err;
+                    counter++;
+                    var roadObj = {};
+                    roadObj.roadName = result.roadName;
+                    roadObj.coordinator = result.coord;
+                    roadObj.speedLimit = result.speed;
+                    roadObj.accident = result.accident;
+                    console.log("vvvv whyyyy");
+                    console.log(roadObj);
+                    roadObjArray.push(roadObj);
+                    if (counter == res.length) {
+                        console.log("finish");
+                        console.log(roadObjArray);
+                        database.close();
+                        findAccident(roadObjArray, function(ress) {
+                            console.log("callback1");
+                            console.log(ress);
+                            for(i in roadObjArray){
+                                var tempArray = [];
+                                for(j in roadObjArray[i].accident){
+                                    tempArray.push(ress[roadObjArray[i].accident[j]]);
+                                }
+                                roadObjArray[i].accident = tempArray;
+                            }
+                            console.log("resss");
+                            console.log(roadObjArray);
+                            callback(roadObjArray);
+                        })
+
+                    }
+                });
+            }
+        });
+    }
+
     var obj = req.body;
     console.log(obj);
     MongoClient.connect(mongourl, function(err, database) {
@@ -179,7 +265,7 @@ app.post('/coord', jsonParser, function(req, res) {
                             },
                             100
                         );
-                        if(tf==true){
+                        if (tf == true) {
                             console.log("found!");
                             result.push(key);
                             //console.log(key);
@@ -188,11 +274,16 @@ app.post('/coord', jsonParser, function(req, res) {
                     }
                 }
                 console.log(result);
-                if(result.length!=0){
-                    res.end(result.toString());
-                }else{
+                if (result.length != 0) {
+                    findRoadDetails(result, function(obj) {
+                        console.log("vvvv endddd");
+                        console.log(obj);
+                        res.json(obj);
+                    });
+                    //res.end(result.toString());
+                } else {
                     res.end("Sorry, no any road nearby");
-                }     
+                }
             }
         });
     });
