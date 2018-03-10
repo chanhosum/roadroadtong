@@ -1,6 +1,6 @@
 /*
 git add .
-git commit -m "coord"
+git commit -m "details"
 git push origin master
 
 curl -H "Content-Type: application/json" -X POST -d '{"username":"xyz","password":"xyz"}' https://testdbdb.herokuapp.com/post
