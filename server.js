@@ -290,6 +290,7 @@ app.post('/coord', jsonParser, function(req, res) {
 });
 
 app.post('/report', jsonParser, function(req, res) {
+    console.log("report");
     var obj = req.body;
     console.log(obj);
     res.end("ok");
