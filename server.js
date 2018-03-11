@@ -293,7 +293,42 @@ app.post('/report', jsonParser, function(req, res) {
     console.log("report");
     var obj = req.body;
     console.log(obj);
-    res.end("ok");
+    var newObj = {};
+    newObj.id = new Date().getTime();
+    newObj.account_id = obj.UserName;
+    newObj.type = obj.type;
+    newObj.description = obj.accident_description;
+    newObj.roadName = obj.RoadName;
+    newObj.up = 0;
+    newObj.down = 0;
+    var latLngStr = obj.accident_position;
+    latLngStr = latLngStr.replace("lat/lng: (","").replace(")","");
+    console.log("latLngStr");
+    console.log(latLngStr);
+    var latLngStrArray = latLngStr.split(",");
+    console.log("latLngStrArray");
+    console.log(latLngStrArray);
+    latLngStrArray[0] = parseFloat(latLngStrArray[0]).toFixed(6);
+    latLngStrArray[1] = parseFloat(latLngStrArray[1]).toFixed(6);
+    newObj.coord = {"lat":latLngStrArray[0],"long":latLngStrArray[1]}
+    newObj.comments = [];
+    console.log(newObj);
+    MongoClient.connect(mongourl, function(err, database) {
+        assert.equal(err, null);
+        const myDB = database.db('anson');
+        myDB.collection("accident").insert(newObj, function(err2, result2) {
+            //database.close();
+            assert.equal(err2, null);
+            console.log("Insert report was successful!");
+            myDB.collection("road").update({roadName:obj.RoadName},{$push:{"accident":newObj.id}}, function(err3, result3) {
+                assert.equal(err3, null);
+                console.log("Update report was successful!");
+                database.close();
+                res.end("ok");
+            })
+            
+        });
+    });
 });
 
 app.post('/test', jsonParser, function(req, res) {
