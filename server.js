@@ -289,6 +289,11 @@ app.post('/coord', jsonParser, function(req, res) {
     });
 });
 
+app.post('/report', jsonParser, function(req, res) {
+    var obj = req.body;
+    console.log(obj);
+});
+
 app.post('/test', jsonParser, function(req, res) {
     var obj = req.body;
     console.log(obj);
