@@ -332,7 +332,7 @@ app.post('/report', jsonParser, function(req, res) {
 });
 
 app.post('/test', jsonParser, function(req, res) {
-    console.log("testttttestttt");
+    console.log("testttttestttt2");
     var obj = req.body;
     console.dir(obj);
     res.end("ok");
