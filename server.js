@@ -197,6 +197,7 @@ app.post('/coord', jsonParser, function(req, res) {
                     roadObj.coordinator = result.centerCoord;
                     roadObj.speedLimit = result.speed;
                     roadObj.accident = result.accident;
+                    roadObj.carpark = result.carpark;
                     console.log("vvvv whyyyy");
                     console.log(roadObj);
                     roadObjArray.push(roadObj);
