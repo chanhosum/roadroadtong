@@ -293,14 +293,14 @@ app.post("/getCond", jsonParser, function(req, res) {
     console.log("getCond");
     MongoClient.connect(mongourl, function(err, database) {
         const myDB = database.db('anson');
-        cursor = myDB.collection("road").find({},{"coord":1,"_id":0});
+        var cursor2 = myDB.collection("road").find({},{"coord":1,"_id":0});
         var objj = [];
-        cursor.each(function(err, doc) {
+        cursor2.each(function(err, doc) {
             assert.equal(err, null);
             if (doc != null) {
                 objj.push(doc);
             } else {
-                console.log(objj);
+                res.json({result:objj});
             }
         });
     });
