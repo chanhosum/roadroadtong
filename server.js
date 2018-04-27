@@ -318,8 +318,7 @@ app.post("/getReport", jsonParser, function(req, res) {
         cursor.each(function(err, doc) {
             assert.equal(err, null);
             if (doc != null) {
-                console.log(doc.coord);
-                objj = objj.concat(doc.coord);
+                objj = objj.push(doc);
             } else {
                 res.json({result:objj});
             }
