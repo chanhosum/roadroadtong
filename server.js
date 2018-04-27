@@ -313,9 +313,9 @@ app.post("/getReport", jsonParser, function(req, res) {
     console.log(obj);
     MongoClient.connect(mongourl, function(err, database) {
         const myDB = database.db('anson');
-        var cursor2 = myDB.collection("accident").find({"roadName":obj.roadName});
+        var cursor = myDB.collection("accident").find({"roadName":obj.roadName});
         var objj = [];
-        cursor2.each(function(err, doc) {
+        cursor.each(function(err, doc) {
             assert.equal(err, null);
             if (doc != null) {
                 console.log(doc.coord);
