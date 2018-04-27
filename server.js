@@ -16,6 +16,47 @@ var mongourl = 'mongodb://ansonanson:ansonanson@ds243325.mlab.com:43325/anson';
 
 var geolib = require('geolib');
 
+function findAllCoord(y2, y1, x2, x1) {
+    console.log(y2 + " " + y1 + " " + x2 + " " + x1);
+    parseFloat(y2);
+    parseFloat(y1);
+    parseFloat(x2);
+    parseFloat(x1);
+    //console.log((y2-y1));
+    //console.log((x2-x1));
+    var m = (y2 - y1) / (x2 - x1); //0.000451/-0.001581
+    //console.log(m);
+    var anArray = [];
+    if (x2 > x1) {
+        var repNum = x2 * 1000000 - x1 * 1000000;
+        var aVar = parseFloat(x1);
+        anArray.push({ lat: x1, long: y1 });
+        //console.log("vvvv1");
+        //console.log(repNum);
+        //console.log(parseInt(repNum/100));
+    } else {
+        var repNum = x1 * 1000000 - x2 * 1000000;
+        var aVar = parseFloat(x2);
+        anArray.push({ lat: x2, long: y2 });
+        //console.log("vvvv12");
+        //console.log(repNum);
+        //console.log(parseInt(repNum/100));            
+    }
+    for (i = 1; i < repNum / 100; i++) {
+        //console.log("whyyy");
+        //console.log(y1);
+        //console.log(m * ((aVar+i*0.000100)-x1));
+        var resultt = parseFloat(y1) + parseFloat(m * ((aVar + i * 0.000100) - x1));
+        var latFloat = parseFloat(aVar + i * 0.000100);
+        anArray.push({ lat: latFloat.toFixed(6).toString(), long: resultt.toFixed(6).toString() });
+    }
+    if (x2 > x1) {
+        anArray.push({ lat: x2, long: y2 });
+    } else {
+        anArray.push({ lat: x1, long: y1 });
+    }
+    return anArray;
+}
 app.get('/', function(req, res) {
     console.log(0.000807 % 100);
 
@@ -98,47 +139,6 @@ app.post('/login', jsonParser, function(req, res) {
 });
 
 app.post('/coord', jsonParser, function(req, res) {
-    function findAllCoord(y2, y1, x2, x1) {
-        console.log(y2 + " " + y1 + " " + x2 + " " + x1);
-        parseFloat(y2);
-        parseFloat(y1);
-        parseFloat(x2);
-        parseFloat(x1);
-        //console.log((y2-y1));
-        //console.log((x2-x1));
-        var m = (y2 - y1) / (x2 - x1); //0.000451/-0.001581
-        //console.log(m);
-        var anArray = [];
-        if (x2 > x1) {
-            var repNum = x2 * 1000000 - x1 * 1000000;
-            var aVar = parseFloat(x1);
-            anArray.push({ lat: x1, long: y1 });
-            //console.log("vvvv1");
-            //console.log(repNum);
-            //console.log(parseInt(repNum/100));
-        } else {
-            var repNum = x1 * 1000000 - x2 * 1000000;
-            var aVar = parseFloat(x2);
-            anArray.push({ lat: x2, long: y2 });
-            //console.log("vvvv12");
-            //console.log(repNum);
-            //console.log(parseInt(repNum/100));            
-        }
-        for (i = 1; i < repNum / 100; i++) {
-            //console.log("whyyy");
-            //console.log(y1);
-            //console.log(m * ((aVar+i*0.000100)-x1));
-            var resultt = parseFloat(y1) + parseFloat(m * ((aVar + i * 0.000100) - x1));
-            var latFloat = parseFloat(aVar + i * 0.000100);
-            anArray.push({ lat: latFloat.toFixed(6).toString(), long: resultt.toFixed(6).toString() });
-        }
-        if (x2 > x1) {
-            anArray.push({ lat: x2, long: y2 });
-        } else {
-            anArray.push({ lat: x1, long: y1 });
-        }
-        return anArray;
-    }
 
     function findAccident(obj, callback) {
         console.log("findAccident");
@@ -208,9 +208,9 @@ app.post('/coord', jsonParser, function(req, res) {
                         findAccident(roadObjArray, function(ress) {
                             console.log("callback1");
                             console.log(ress);
-                            for(i in roadObjArray){
+                            for (i in roadObjArray) {
                                 var tempArray = [];
-                                for(j in roadObjArray[i].accident){
+                                for (j in roadObjArray[i].accident) {
                                     tempArray.push(ress[roadObjArray[i].accident[j]]);
                                 }
                                 roadObjArray[i].accident = tempArray;
@@ -303,7 +303,7 @@ app.post('/report', jsonParser, function(req, res) {
     newObj.up = 0;
     newObj.down = 0;
     var latLngStr = obj.accident_position;
-    latLngStr = latLngStr.replace("lat/lng: (","").replace(")","");
+    latLngStr = latLngStr.replace("lat/lng: (", "").replace(")", "");
     console.log("latLngStr");
     console.log(latLngStr);
     var latLngStrArray = latLngStr.split(",");
@@ -311,7 +311,7 @@ app.post('/report', jsonParser, function(req, res) {
     console.log(latLngStrArray);
     latLngStrArray[0] = parseFloat(latLngStrArray[0]).toFixed(6);
     latLngStrArray[1] = parseFloat(latLngStrArray[1]).toFixed(6);
-    newObj.coord = {"lat":latLngStrArray[0],"long":latLngStrArray[1]}
+    newObj.coord = { "lat": latLngStrArray[0], "long": latLngStrArray[1] }
     newObj.comments = [];
     console.log(newObj);
     MongoClient.connect(mongourl, function(err, database) {
@@ -321,13 +321,13 @@ app.post('/report', jsonParser, function(req, res) {
             //database.close();
             assert.equal(err2, null);
             console.log("Insert report was successful!");
-            myDB.collection("road").update({roadName:obj.RoadName},{$push:{"accident":newObj.id}}, function(err3, result3) {
+            myDB.collection("road").update({ roadName: obj.RoadName }, { $push: { "accident": newObj.id } }, function(err3, result3) {
                 assert.equal(err3, null);
                 console.log("Update report was successful!");
                 database.close();
                 res.end("ok");
             })
-            
+
         });
     });
 });
