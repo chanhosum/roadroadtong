@@ -293,7 +293,8 @@ app.post("/getCond", jsonParser, function(req, res) {
     console.log("getCond");
     MongoClient.connect(mongourl, function(err, database) {
         const myDB = database.db('anson');
-        var cursor2 = myDB.collection("road").find({},{"coord":1,"_id":0});
+        var cursor2 = myDB.collection("road").find({});
+        cursor2 = cursor2.project({"coord":1,"_id":0});
         var objj = [];
         cursor2.each(function(err, doc) {
             assert.equal(err, null);
