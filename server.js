@@ -318,7 +318,7 @@ app.post("/getReport", jsonParser, function(req, res) {
         cursor.each(function(err, doc) {
             assert.equal(err, null);
             if (doc != null) {
-                objj = objj.push(doc);
+                objj.push(doc);
             } else {
                 res.json({result:objj});
             }
