@@ -316,6 +316,7 @@ app.post("/getReport", jsonParser, function(req, res) {
         const myDB = database.db('anson');
         var cursor = myDB.collection("accident").find({"roadName":obj.roadName});
         var objj = [];
+        cursor = cursor.sort({"id":-1});
         cursor.each(function(err, doc) {
             assert.equal(err, null);
             if (doc != null) {
