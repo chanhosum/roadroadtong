@@ -299,7 +299,7 @@ app.post("/getCond", jsonParser, function(req, res) {
         cursor2.each(function(err, doc) {
             assert.equal(err, null);
             if (doc != null) {
-                objj.push(doc.coord);
+                objj.concat(doc.coord);
             } else {
                 res.json({result:objj});
             }
