@@ -300,7 +300,7 @@ app.post("/getCond", jsonParser, function(req, res) {
             assert.equal(err, null);
             if (doc != null) {
                 console.log(doc.coord);
-                objj.concat(doc.coord);
+                objj = objj.concat(doc.coord);
             } else {
                 res.json({result:objj});
             }
