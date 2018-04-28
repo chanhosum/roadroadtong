@@ -375,7 +375,7 @@ app.post('/report', jsonParser, function(req, res) {
 app.post('/test', jsonParser, function(req, res) {
     console.log("testttttestttt2");
     var obj = req.body;
-    console.dir(obj);
+    console.log(JSON.stringify(obj));
     res.end("ok");
 });
 
