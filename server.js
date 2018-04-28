@@ -429,13 +429,20 @@ app.post('/test', jsonParser, function(req, res) {
             //}
             var bigObjj = [];
             var nameObjjArr = [];
+            var nameObjjArrConver = [];
             function recursive(i) {
                 if (i == allArray.length) {
                     console.log("finnnnn");
                     console.log(bigObjj);
                     console.log("allRoad");
                     console.log(nameObjjArr);
-                    res.json({result:bigObjj,allRoad:nameObjjArr});
+                    for(ij=0;ij<nameObjjArr.length;ij++){
+                        nameObjjArrConver[ij] = [];
+                        for(key in nameObjjArr[ij]){
+                            nameObjjArrConver[ij].push(key);
+                        }
+                    }
+                    res.json({result:bigObjj,allRoad:nameObjjArrConver});
                     return;
                 } else {
                     var objj = [];
