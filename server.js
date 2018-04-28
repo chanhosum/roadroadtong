@@ -386,7 +386,7 @@ app.post('/test', jsonParser, function(req, res) {
     }
     console.log("testttttestttt2");
     var obj = req.body;
-    if (obj != {}) {
+    if (JSON.stringify(obj) != "{}") {
         console.log(JSON.stringify(obj));
         var routes = obj.routes;
         var allArray = [];
