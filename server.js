@@ -446,6 +446,7 @@ app.post('/test', jsonParser, function(req, res) {
                         }
                     });
                     cursor = cursor.sort({ "id": -1 });
+                    nameObjjArr[i] = {};
                     cursor.each(function(err, doc) {
                         assert.equal(err, null);
                         if (doc != null) {
