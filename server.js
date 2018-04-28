@@ -18,7 +18,7 @@ var mongourl = 'mongodb://ansonanson:ansonanson@ds243325.mlab.com:43325/anson';
 var geolib = require('geolib');
 
 function findAllCoord(y2, y1, x2, x1) {
-    console.log(y2 + " " + y1 + " " + x2 + " " + x1);
+    //console.log(y2 + " " + y1 + " " + x2 + " " + x1);
     parseFloat(y2);
     parseFloat(y1);
     parseFloat(x2);
@@ -59,12 +59,12 @@ function findAllCoord(y2, y1, x2, x1) {
     return anArray;
 }
 app.get('/', function(req, res) {
-    console.log(0.000807 % 100);
+    //console.log(0.000807 % 100);
 
     var tf = geolib.isPointInCircle({ latitude: 22.318166, longitude: 114.180750 }, { latitude: 22.316610, longitude: 114.180547 },
         100
     );
-    console.log(tf);
+    //console.log(tf);
     res.end("hello world vvvvv");
 })
 
@@ -73,18 +73,19 @@ app.get('/json', function(req, res) {
 })
 
 app.post('/post', jsonParser, function(req, res) {
-    console.log(req.body);
+    //console.log(req.body);
     //res.end(JSON.stringify(req.body));
     res.json({ aaa: "bbb wifi" });
 })
 
 app.post('/register', jsonParser, function(req, res) {
+    console.log("register");
     var obj = req.body;
-    console.log(obj);
+    //console.log(obj);
     MongoClient.connect(mongourl, function(err, database) {
         assert.equal(err, null);
-        console.log("errrr:");
-        console.log(err);
+        //console.log("errrr:");
+        //console.log(err);
         const myDB = database.db('anson');
         cursor = myDB.collection("account").find({ account_id: obj.account_id });
         var objj = [];
@@ -93,7 +94,7 @@ app.post('/register', jsonParser, function(req, res) {
             if (doc != null) {
                 objj.push(doc);
             } else {
-                console.log(objj);
+                //console.log(objj);
                 if (objj.length == 0) {
                     console.log("not repeat");
                     myDB.collection("account").insert(obj, function(err, result) {
@@ -113,20 +114,21 @@ app.post('/register', jsonParser, function(req, res) {
 });
 
 app.post('/login', jsonParser, function(req, res) {
+    console.log("login");
     var obj = req.body;
-    console.log(obj);
+    //console.log(obj);
     MongoClient.connect(mongourl, function(err, database) {
         assert.equal(err, null);
-        console.log("errrr:");
-        console.log(err);
+        //console.log("errrr:");
+        //console.log(err);
         const myDB = database.db('anson');
         cursor = myDB.collection("account").find({ account_id: obj.account_id });
         var objj = [];
         cursor.each(function(err, doc) {
             assert.equal(err, null);
-            console.log(doc)
+            //console.log(doc)
             if (doc != null) {
-                console.log(doc);
+                //console.log(doc);
                 if (doc.password == obj.password) {
                     res.end("ok");
                 } else {
@@ -148,15 +150,15 @@ app.post('/coord', jsonParser, function(req, res) {
             var accidentObj = {};
 
             function recursive1(i) {
-                console.log("I:::");
-                console.log(i);
+                //console.log("I:::");
+                //console.log(i);
                 if (i == obj.length) {
 
-                    console.log(accidentObj);
+                    //console.log(accidentObj);
                     callback(accidentObj);
                     return;
                 } else {
-                    console.log("else");
+                    //console.log("else");
                     if (obj[i].accident.length == 0) {
                         i++;
                         recursive1(i);
@@ -166,12 +168,12 @@ app.post('/coord', jsonParser, function(req, res) {
                     for (j = 0; j < obj[i].accident.length; j++) {
                         myDB.collection("accident").findOne({ id: obj[i].accident[j] }, function(err, result) {
                             if (err) throw err;
-                            console.log(result);
+                            //console.log(result);
                             counter++;
                             accidentObj[result.id] = result;
-                            console.log(accidentObj);
+                            //console.log(accidentObj);
                             if (counter == obj[i].accident.length) {
-                                console.log("xcczxczdczx");
+                                //console.log("xcczxczdczx");
                                 i++;
                                 recursive1(i);
                                 return;
@@ -185,6 +187,7 @@ app.post('/coord', jsonParser, function(req, res) {
     }
 
     function findRoadDetails(res, callback) {
+        console.log("findRoadDetails");
         var roadObjArray = [];
         MongoClient.connect(mongourl, function(err, database) {
             const myDB = database.db('anson');
@@ -199,16 +202,16 @@ app.post('/coord', jsonParser, function(req, res) {
                     roadObj.speedLimit = result.speed;
                     roadObj.accident = result.accident;
                     roadObj.carpark = result.carPark;
-                    console.log("vvvv whyyyy");
-                    console.log(roadObj);
+                    //console.log("vvvv whyyyy");
+                    //console.log(roadObj);
                     roadObjArray.push(roadObj);
                     if (counter == res.length) {
-                        console.log("finish");
-                        console.log(roadObjArray);
+                        //console.log("finish");
+                        //console.log(roadObjArray);
                         database.close();
                         findAccident(roadObjArray, function(ress) {
-                            console.log("callback1");
-                            console.log(ress);
+                            //console.log("callback1");
+                            //console.log(ress);
                             for (i in roadObjArray) {
                                 var tempArray = [];
                                 for (j in roadObjArray[i].accident) {
@@ -216,8 +219,8 @@ app.post('/coord', jsonParser, function(req, res) {
                                 }
                                 roadObjArray[i].accident = tempArray;
                             }
-                            console.log("resss");
-                            console.log(roadObjArray);
+                            //console.log("resss");
+                            //console.log(roadObjArray);
                             callback(roadObjArray);
                         })
 
@@ -228,7 +231,7 @@ app.post('/coord', jsonParser, function(req, res) {
     }
 
     var obj = req.body;
-    console.log(obj);
+    //console.log(obj);
     MongoClient.connect(mongourl, function(err, database) {
         const myDB = database.db('anson');
         cursor = myDB.collection("road").find();
@@ -236,9 +239,9 @@ app.post('/coord', jsonParser, function(req, res) {
         var result = [];
         cursor.each(function(err, doc) {
             assert.equal(err, null);
-            console.log(doc)
+            //console.log(doc)
             if (doc != null) {
-                console.log(doc.roadName);
+                //console.log(doc.roadName);
                 var allCoordSet = [];
                 for (i in doc.coord) {
                     var allCoord = findAllCoord(doc.coord[i].lineE.long, doc.coord[i].lineS.long, doc.coord[i].lineE.lat, doc.coord[i].lineS.lat);
@@ -251,9 +254,9 @@ app.post('/coord', jsonParser, function(req, res) {
             } else {
                 //console.log(objj);
                 for (key in objj) {
-                    console.log(key);
+                    //console.log(key);
                     for (i = 0; i < objj[key].length; i++) {
-                        console.log(objj[key][i]);
+                        //console.log(objj[key][i]);
                         var userLat = parseFloat(obj.lat);
                         var userLong = parseFloat(obj.long);
                         var targetLat = parseFloat(objj[key][i].lat);
@@ -268,18 +271,18 @@ app.post('/coord', jsonParser, function(req, res) {
                             100
                         );
                         if (tf == true) {
-                            console.log("found!");
+                            //console.log("found!");
                             result.push(key);
                             //console.log(key);
                             break;
                         }
                     }
                 }
-                console.log(result);
+                //console.log(result);
                 if (result.length != 0) {
                     findRoadDetails(result, function(obj) {
-                        console.log("vvvv endddd");
-                        console.log(obj);
+                        //console.log("vvvv endddd");
+                        //console.log(obj);
                         res.json(obj);
                     });
                     //res.end(result.toString());
@@ -300,7 +303,7 @@ app.post("/getCond", jsonParser, function(req, res) {
         cursor2.each(function(err, doc) {
             assert.equal(err, null);
             if (doc != null) {
-                console.log(doc.coord);
+                //console.log(doc.coord);
                 objj = objj.concat(doc.coord);
             } else {
                 res.json(objj);
@@ -311,7 +314,7 @@ app.post("/getCond", jsonParser, function(req, res) {
 app.post("/getReport", jsonParser, function(req, res) {
     console.log("getReport");
     var obj = req.body;
-    console.log(obj);
+    //console.log(obj);
     MongoClient.connect(mongourl, function(err, database) {
         const myDB = database.db('anson');
         var cursor = myDB.collection("accident").find({"roadName":obj.roadName});
@@ -330,7 +333,7 @@ app.post("/getReport", jsonParser, function(req, res) {
 app.post('/report', jsonParser, function(req, res) {
     console.log("report");
     var obj = req.body;
-    console.log(obj);
+    //console.log(obj);
     var newObj = {};
     newObj.id = new Date().getTime();
     newObj.account_id = obj.UserName;
@@ -341,16 +344,16 @@ app.post('/report', jsonParser, function(req, res) {
     newObj.down = 0;
     var latLngStr = obj.accident_position;
     latLngStr = latLngStr.replace("lat/lng: (", "").replace(")", "");
-    console.log("latLngStr");
-    console.log(latLngStr);
+    //console.log("latLngStr");
+    //console.log(latLngStr);
     var latLngStrArray = latLngStr.split(",");
-    console.log("latLngStrArray");
-    console.log(latLngStrArray);
+    //console.log("latLngStrArray");
+    //console.log(latLngStrArray);
     latLngStrArray[0] = parseFloat(latLngStrArray[0]).toFixed(6);
     latLngStrArray[1] = parseFloat(latLngStrArray[1]).toFixed(6);
     newObj.coord = { "lat": latLngStrArray[0], "long": latLngStrArray[1] }
     newObj.comments = [];
-    console.log(newObj);
+    //console.log(newObj);
     MongoClient.connect(mongourl, function(err, database) {
         assert.equal(err, null);
         const myDB = database.db('anson');
