@@ -303,7 +303,7 @@ app.post("/getCond", jsonParser, function(req, res) {
                 console.log(doc.coord);
                 objj = objj.concat(doc.coord);
             } else {
-                res.json({result:objj});
+                res.json(objj);
             }
         });
     });
