@@ -428,12 +428,12 @@ app.post('/test', jsonParser, function(req, res) {
 
             //}
             var bigObjj = [];
-
+            var nameObjjArr = [];
             function recursive(i) {
                 if (i == allArray.length) {
                     console.log("finnnnn");
                     console.log(bigObjj);
-                    res.json(bigObjj);
+                    res.json({result:bigObjj,allRoad:nameObjjArr});
                     return;
                 } else {
                     var objj = [];
@@ -450,6 +450,7 @@ app.post('/test', jsonParser, function(req, res) {
                         assert.equal(err, null);
                         if (doc != null) {
                             objj.push(doc);
+                            nameObjjArr[i][doc.roadName]=doc.roadName;
                         } else {
                             console.log(i+"result::::::::");
                             console.log(objj);
