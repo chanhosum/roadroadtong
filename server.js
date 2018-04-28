@@ -377,7 +377,7 @@ app.post('/test', jsonParser, function(req, res) {
         var ret = "";
 
         if (/"/.test(str)) {
-            ret = str.match(/"(.*?)"/g);
+            ret = str.match(/"(.*?)"/g).replace(/"/g, "");
         } else {
             ret = str;
         }
