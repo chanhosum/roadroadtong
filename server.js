@@ -410,7 +410,43 @@ app.post('/test', jsonParser, function(req, res) {
             allArray[i] = tempArr;
         }
         console.log(allArray);
-        res.json(allArray);
+        MongoClient.connect(mongourl, function(err, database) {
+            assert.equal(err, null);
+            //console.log("errrr:");
+            //console.log(err);
+            const myDB = database.db('anson');
+            var cursor = [];
+            for (iii = 0; iii < allArray.length; iii++) {
+                cursor[iii] = myDB.collection("accident").find({
+                    "roadName": {
+                        "$in": allArray[iii]
+                    }
+                });
+                cursor[iii] = cursor[iii].sort({ "id": -1 });
+            }
+            var bigObjj = [];
+            function recursive(i) {
+                if(i==cursor.length){
+                    console.log(bigObjj);
+                    res.json(bigObjj);
+                    return;
+                };
+                var objj = [];
+                cursor[iii].each(function(err, doc) {
+                    assert.equal(err, null);
+                    if (doc != null) {
+                        objj.push(doc);
+                    } else {
+                        bigObjj.push(objj);
+                        i++;
+                        recursive(i);
+                        return;
+                    }
+                });
+
+            }
+            recursive(0);
+        });
     } else {
         res.end("ok");
     }
