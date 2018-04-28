@@ -386,26 +386,30 @@ app.post('/test', jsonParser, function(req, res) {
     }
     console.log("testttttestttt2");
     var obj = req.body;
-    console.log(JSON.stringify(obj));
-    var routes = obj.routes;
-    var allArray = [];
-    for (i = 0; i < routes.length; i++) {
-        var tempArr = [];
-        console.log("legs length:");
-        console.log(routes[i].legs.length);
-        var steps = routes[i].legs[0].steps;
-        for (j = 0; j < steps.length; j++) {
-            var newStr = steps[j].html_instructions.replace(/<br>/g, "\"");
-            newStr = newStr.replace(/<\/br>/g, "\"");
-            console.log("newStr");
-            console.log(newStr);
-            console.log(extractText(newStr));
-            tempArr = tempArr.concat(extractText(newStr));
+    if (obj != {}) {
+        console.log(JSON.stringify(obj));
+        var routes = obj.routes;
+        var allArray = [];
+        for (i = 0; i < routes.length; i++) {
+            var tempArr = [];
+            console.log("legs length:");
+            console.log(routes[i].legs.length);
+            var steps = routes[i].legs[0].steps;
+            for (j = 0; j < steps.length; j++) {
+                var newStr = steps[j].html_instructions.replace(/<b>/g, "\"");
+                newStr = newStr.replace(/<\/b>/g, "\"");
+                console.log("newStr");
+                console.log(newStr);
+                console.log(extractText(newStr));
+                tempArr = tempArr.concat(extractText(newStr));
+            }
+            allArray[i] = tempArr;
         }
-        allArray[i] = tempArr;
+        console.log(allArray);
+        res.json(allArray);
+    }else{
+        res.end("ok");
     }
-    console.log(allArray);
-    res.json(allArray);
 });
 
 app.post('/db', jsonParser, function(req, res) {
