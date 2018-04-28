@@ -417,6 +417,7 @@ app.post('/test', jsonParser, function(req, res) {
             const myDB = database.db('anson');
             var cursor = [];
             for (iii = 0; iii < allArray.length; iii++) {
+                console.log(allArray[iii]);
                 cursor[iii] = myDB.collection("accident").find({
                     "roadName": {
                         "$in": allArray[iii]
