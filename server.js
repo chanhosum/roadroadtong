@@ -430,6 +430,8 @@ app.post('/test', jsonParser, function(req, res) {
             var bigObjj = [];
             var nameObjjArr = [];
             var nameObjjArrConver = [];
+            var typeObjjArr = [];
+            var typeObjjArrConver = [];
 
             function recursive(i) {
                 if (i == allArray.length) {
@@ -441,9 +443,18 @@ app.post('/test', jsonParser, function(req, res) {
                             nameObjjArrConver[ij].push(key);
                         }
                     }
+                    for (ijk = 0; ijk < typeObjjArr.length; ijk++) {
+                        typeObjjArrConver[ijk] = [];
+                        for (key in typeObjjArr[ijk]) {
+                            typeObjjArrConver[ijk].push(key);
+                        }
+                    }
+
                     console.log("allRoad");
                     console.log(nameObjjArrConver);
-                    res.json({ result: bigObjj, allRoad: nameObjjArrConver });
+                    console.log("allType");
+                    console.log(typeObjjArrConver);
+                    res.json({ result: bigObjj, allRoad: nameObjjArrConver ,allType:typeObjjArrConver});
                     return;
                 } else {
                     var objj = [];
@@ -457,11 +468,13 @@ app.post('/test', jsonParser, function(req, res) {
                     });
                     cursor = cursor.sort({ "id": -1 });
                     nameObjjArr[i] = {};
+                    typeObjjArr[i] = {};
                     cursor.each(function(err, doc) {
                         assert.equal(err, null);
                         if (doc != null) {
                             objj.push(doc);
                             nameObjjArr[i][doc.roadName] = doc.roadName;
+                            typeObjjArr[i][doc.type] = doc.type;
                         } else {
                             console.log(i + "result::::::::");
                             console.log(objj);
