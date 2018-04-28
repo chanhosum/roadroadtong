@@ -395,8 +395,8 @@ app.post('/test', jsonParser, function(req, res) {
         console.log(routes[i].legs.length);
         var steps = routes[i].legs[0].steps;
         for (j = 0; j < steps.length; j++) {
-            var newStr = steps[j].html_instructions.replace("<b>", "\"");
-            newStr = newStr.replace("</b>", "\"");
+            var newStr = steps[j].html_instructions.replace(/<br>/g, "\"");
+            newStr = newStr.replace(/<\/br>/g, "\"");
             console.log("newStr");
             console.log(newStr);
             console.log(extractText(newStr));
