@@ -377,7 +377,7 @@ app.post('/test', jsonParser, function(req, res) {
         var ret = "";
 
         if (/"/.test(str)) {
-            ret = str.match(/"(.*?)"/g).replace(/"/g, "");
+            ret = str.match(/"(.*?)"/g);
         } else {
             ret = str;
         }
@@ -400,14 +400,18 @@ app.post('/test', jsonParser, function(req, res) {
                 newStr = newStr.replace(/<\/b>/g, "\"");
                 console.log("newStr");
                 console.log(newStr);
-                console.log(extractText(newStr));
-                tempArr = tempArr.concat(extractText(newStr));
+                var arrrr = extractText(newStr);
+                for (ii = 0; ii < arrrr.length; ii++) {
+                    arrrr[ii] = arrrr[ii].replace(/"/g, "");
+                }
+                console.log(arrrr);
+                tempArr = tempArr.concat(arrrr);
             }
             allArray[i] = tempArr;
         }
         console.log(allArray);
         res.json(allArray);
-    }else{
+    } else {
         res.end("ok");
     }
 });
