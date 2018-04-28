@@ -444,7 +444,7 @@ app.post('/test', jsonParser, function(req, res) {
                     return;
                 };
                 var objj = [];
-                cursor[iii].each(function(err, doc) {
+                cursor[i].each(function(err, doc) {
                     assert.equal(err, null);
                     if (doc != null) {
                         objj.push(doc);
