@@ -376,7 +376,25 @@ app.post('/test', jsonParser, function(req, res) {
     console.log("testttttestttt2");
     var obj = req.body;
     console.log(JSON.stringify(obj));
-    res.end("ok");
+    var routes = obj.routes;
+    var allArray = [];
+    for(i=0;i<routes.length;i++){
+        var tempArr = [];
+        console.log("legs length:");
+        console.log(routes[i].legs.length);
+        var steps = routes[i].legs[0].steps;
+        for(j=0;j<steps.length;j++){
+            var strarray = steps[j].html_instructions.split(" ");
+            for(k=0;k<strarray.length;k++){
+                if(strarray[k].indexOf("<b>")!=0){
+                    tempArr.push(strarray[k]);
+                }
+            }
+        }
+        allArray[i] = tempArr;
+    }
+    console.log(allArray);
+    res.json(allArray);
 });
 
 app.post('/db', jsonParser, function(req, res) {
