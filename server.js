@@ -415,7 +415,6 @@ app.post('/test', jsonParser, function(req, res) {
             //console.log("errrr:");
             //console.log(err);
             const myDB = database.db('anson');
-            var cursor = [];
             /*for (iii = 0; iii < allArray.length; iii++) {
                 console.log(allArray[iii]);
                 cursor[iii] = myDB.collection("accident").find({
@@ -426,35 +425,39 @@ app.post('/test', jsonParser, function(req, res) {
                 cursor[iii] = cursor[iii].sort({ "id": -1 });
             }*/
             //for (iii = 0; iii < allArray.length; iii++) {
-                console.log("allArray[0]");
-                console.log(allArray[0]);
-                cursor[0] = myDB.collection("accident").find({
-                    "roadName": {
-                        "$in": allArray[0]
-                    }
-                });
-                cursor[0] = cursor[0].sort({ "id": -1 });
+
             //}
             var bigObjj = [];
 
             function recursive(i) {
-                if (i == cursor.length) {
+                if (i == allArray.length) {
+                    console.log("finnnnn");
                     console.log(bigObjj);
                     res.json(bigObjj);
                     return;
-                };
-                var objj = [];
-                cursor[i].each(function(err, doc) {
-                    assert.equal(err, null);
-                    if (doc != null) {
-                        objj.push(doc);
-                    } else {
-                        bigObjj.push(objj);
-                        i++;
-                        recursive(i);
-                        return;
-                    }
-                });
+                } else {
+                    var objj = [];
+                    var cursor;
+                    console.log("allArray[i]");
+                    console.log(allArray[i]);
+                    cursor = myDB.collection("accident").find({
+                        "roadName": {
+                            "$in": allArray[i]
+                        }
+                    });
+                    cursor = cursor.sort({ "id": -1 });
+                    cursor.each(function(err, doc) {
+                        assert.equal(err, null);
+                        if (doc != null) {
+                            objj.push(doc);
+                        } else {
+                            bigObjj.push(objj);
+                            i++;
+                            recursive(i);
+                            return;
+                        }
+                    });
+                }
 
             }
             recursive(0);
