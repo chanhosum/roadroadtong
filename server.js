@@ -1,6 +1,6 @@
 /*
 git add .
-git commit -m "details"
+git commit -m "final"
 git push origin master
 
 curl -H "Content-Type: application/json" -X POST -d '{"username":"xyz","password":"xyz"}' https://testdbdb.herokuapp.com/post
@@ -433,6 +433,8 @@ app.post('/test', jsonParser, function(req, res) {
                 if (i == allArray.length) {
                     console.log("finnnnn");
                     console.log(bigObjj);
+                    console.log("allRoad");
+                    console.log(nameObjjArr);
                     res.json({result:bigObjj,allRoad:nameObjjArr});
                     return;
                 } else {
