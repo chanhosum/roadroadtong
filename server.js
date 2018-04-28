@@ -373,9 +373,16 @@ app.post('/report', jsonParser, function(req, res) {
 });
 
 app.post('/test', jsonParser, function(req, res) {
-    function findMatchingWords(t, s) {
-        var re = new RegExp("\\w*" + s + "\\w*", "g");
-        return t.match(re);
+    function extractText(str) {
+        var ret = "";
+
+        if (/"/.test(str)) {
+            ret = str.match(/"(.*?)"/g);
+        } else {
+            ret = str;
+        }
+
+        return ret;
     }
     console.log("testttttestttt2");
     var obj = req.body;
@@ -388,7 +395,12 @@ app.post('/test', jsonParser, function(req, res) {
         console.log(routes[i].legs.length);
         var steps = routes[i].legs[0].steps;
         for (j = 0; j < steps.length; j++) {
-            tempArr = tempArr.concat(findMatchingWords(steps[j].html_instructions, "<b>"));
+            var newStr = steps[j].html_instructions.replace("<b>", "\"");
+            newStr = newStr.replace("</b>", "\"");
+            console.log("newStr");
+            console.log(newStr);
+            console.log(extractText(newStr));
+            tempArr = tempArr.concat(extractText(newStr));
         }
         allArray[i] = tempArr;
     }
