@@ -453,7 +453,7 @@ app.post('/test', jsonParser, function(req, res) {
                         } else {
                             console.log(i+"result::::::::");
                             console.log(objj);
-                            bigObjj.push([objj]);
+                            bigObjj.push(objj);
                             i++;
                             recursive(i);
                             return;
