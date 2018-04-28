@@ -298,7 +298,7 @@ app.post("/getCond", jsonParser, function(req, res) {
     MongoClient.connect(mongourl, function(err, database) {
         const myDB = database.db('anson');
         var cursor2 = myDB.collection("road").find({});
-        cursor2 = cursor2.project({"coord":1,"_id":0});
+        cursor2 = cursor2.project({ "coord": 1, "_id": 0 });
         var objj = [];
         cursor2.each(function(err, doc) {
             assert.equal(err, null);
@@ -317,15 +317,15 @@ app.post("/getReport", jsonParser, function(req, res) {
     //console.log(obj);
     MongoClient.connect(mongourl, function(err, database) {
         const myDB = database.db('anson');
-        var cursor = myDB.collection("accident").find({"roadName":obj.roadName});
+        var cursor = myDB.collection("accident").find({ "roadName": obj.roadName });
         var objj = [];
-        cursor = cursor.sort({"id":-1});
+        cursor = cursor.sort({ "id": -1 });
         cursor.each(function(err, doc) {
             assert.equal(err, null);
             if (doc != null) {
                 objj.push(doc);
             } else {
-                res.json({result:objj});
+                res.json({ result: objj });
             }
         });
     });
@@ -373,23 +373,22 @@ app.post('/report', jsonParser, function(req, res) {
 });
 
 app.post('/test', jsonParser, function(req, res) {
+    function findMatchingWords(t, s) {
+        var re = new RegExp("\\w*" + s + "\\w*", "g");
+        return t.match(re);
+    }
     console.log("testttttestttt2");
     var obj = req.body;
     console.log(JSON.stringify(obj));
     var routes = obj.routes;
     var allArray = [];
-    for(i=0;i<routes.length;i++){
+    for (i = 0; i < routes.length; i++) {
         var tempArr = [];
         console.log("legs length:");
         console.log(routes[i].legs.length);
         var steps = routes[i].legs[0].steps;
-        for(j=0;j<steps.length;j++){
-            var strarray = steps[j].html_instructions.split(" ");
-            for(k=0;k<strarray.length;k++){
-                if(strarray[k].indexOf("<b>")!=0){
-                    tempArr.push(strarray[k]);
-                }
-            }
+        for (j = 0; j < steps.length; j++) {
+            tempArr = tempArr.concat(findMatchingWords(steps[j].html_instructions, "<b>"));
         }
         allArray[i] = tempArr;
     }
