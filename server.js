@@ -168,7 +168,7 @@ app.post('/coord', jsonParser, function(req, res) {
                     for (j = 0; j < obj[i].accident.length; j++) {
                         myDB.collection("accident").findOne({ id: obj[i].accident[j] }, function(err, result) {
                             if (err) throw err;
-                            //console.log(result);
+                            console.log(result);
                             counter++;
                             accidentObj[result.id] = result;
                             //console.log(accidentObj);
