@@ -391,7 +391,10 @@ app.post("/getCarpark", jsonParser, function(req, res) {
                 }
                 console.log("whyyyy");
                 console.log(sortArray);
-                sortArray = sortArray.sort().reverse();
+                function sortNumber(a,b) {
+                    return a - b;
+                }
+                sortArray.sort(sortNumber).reverse();
                 console.log(sortArray);
                 for(j=0;j<sortArray.length;j++){
                     objj.push(doc.carPark[0].carparkNum[sortArrayRef.indexOf(sortArray[j])]);
