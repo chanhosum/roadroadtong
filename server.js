@@ -391,7 +391,7 @@ app.post("/getCarpark", jsonParser, function(req, res) {
                 }
                 sortArray.sort();
                 for(j=0;j<sortArray.length;j++){
-                    obj.push(doc.carPark[0].carparkNum[sortArrayRef.indexOf(sortArray[j])]);
+                    objj.push(doc.carPark[0].carparkNum[sortArrayRef.indexOf(sortArray[j])]);
                 }
             } else {
                 res.json({ result: objj });
