@@ -389,7 +389,7 @@ app.post('/carpark', jsonParser, function(req, res) {
         assert.equal(err, null);
         const myDB = database.db('anson');
 
-        myDB.collection("road").update({ "carPark.Name": obj.CarparkName }, { $push: { "carPark.carparkNum": newObj } }, function(err3, result3) {
+        myDB.collection("road").update({ "carPark.Name": obj.CarparkName }, { $push: { "carPark.$.carparkNum": newObj } }, function(err3, result3) {
             assert.equal(err3, null);
             console.log("Update report was successful!");
             database.close();
