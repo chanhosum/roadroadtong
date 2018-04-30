@@ -372,6 +372,35 @@ app.post('/report', jsonParser, function(req, res) {
     });
 });
 
+app.post('/carpark', jsonParser, function(req, res) {
+    console.log("carpark");
+    var obj = req.body;
+    //console.log(obj);
+    var newObj = {};
+    newObj.id = new Date().getTime();
+    newObj.account_id = obj.UserName;
+    newObj.num = obj.remainNum;
+    //console.log("latLngStr");
+    //console.log(latLngStr);
+    //console.log("latLngStrArray");
+    //console.log(latLngStrArray);
+    //console.log(newObj);
+    MongoClient.connect(mongourl, function(err, database) {
+        assert.equal(err, null);
+        const myDB = database.db('anson');
+
+        myDB.collection("road").update({ carPark.Name: obj.CarparkName }, { $push: { "carPark.carparkNum": newObj } }, function(err3, result3) {
+            assert.equal(err3, null);
+            console.log("Update report was successful!");
+            database.close();
+            res.end("ok");
+        })
+
+
+    });
+});
+
+
 app.post('/test', jsonParser, function(req, res) {
     function extractText(str) {
         var ret = "";
@@ -454,7 +483,7 @@ app.post('/test', jsonParser, function(req, res) {
                     console.log(nameObjjArrConver);
                     console.log("allType");
                     console.log(typeObjjArrConver);
-                    res.json({ result: bigObjj, allRoad: nameObjjArrConver ,allType:typeObjjArrConver});
+                    res.json({ result: bigObjj, allRoad: nameObjjArrConver, allType: typeObjjArrConver });
                     return;
                 } else {
                     var objj = [];
