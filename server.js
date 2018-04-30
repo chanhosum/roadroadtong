@@ -383,7 +383,9 @@ app.post("/getCarpark", jsonParser, function(req, res) {
         cursor.each(function(err, doc) {
             assert.equal(err, null);
             if (doc != null) {
-                objj.push(doc);
+                for(i=0;i<doc.carPark[0].carparkNum.length;i++){
+                    objj.push(doc);
+                }
             } else {
                 res.json({ result: objj });
             }
