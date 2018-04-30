@@ -386,10 +386,10 @@ app.post("/getCarpark", jsonParser, function(req, res) {
             assert.equal(err, null);
             if (doc != null) {
                 for(i=0;i<doc.carPark[0].carparkNum.length;i++){
-                    sortArray.push(doc.carPark[0].carparkNum[i].id);
-                    sortArrayRef.push(doc.carPark[0].carparkNum[i].id);
+                    sortArray.push(parseInt(doc.carPark[0].carparkNum[i].id));
+                    sortArrayRef.push(parseInt(doc.carPark[0].carparkNum[i].id));
                 }
-                sortArray.sort();
+                sortArray.sort().reverse();
                 for(j=0;j<sortArray.length;j++){
                     objj.push(doc.carPark[0].carparkNum[sortArrayRef.indexOf(sortArray[j])]);
                 }
