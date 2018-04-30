@@ -380,11 +380,18 @@ app.post("/getCarpark", jsonParser, function(req, res) {
         const myDB = database.db('anson');
         var cursor = myDB.collection("road").find({ "carPark.Name": obj.CarparkName });
         var objj = [];
+        var sortArray = [];
+        var sortArrayRef = [];
         cursor.each(function(err, doc) {
             assert.equal(err, null);
             if (doc != null) {
                 for(i=0;i<doc.carPark[0].carparkNum.length;i++){
-                    objj.push(doc.carPark[0].carparkNum[i]);
+                    sortArray.push(doc.carPark[0].carparkNum[i].id);
+                    sortArrayRef.push(doc.carPark[0].carparkNum[i].id);
+                }
+                sortArray.sort();
+                for(j=0;j<sortArray.length;j++){
+                    obj.push(doc.carPark[0].carparkNum[sortArrayRef.indexOf(sortArray[j])]);
                 }
             } else {
                 res.json({ result: objj });
