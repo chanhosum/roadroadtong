@@ -372,6 +372,26 @@ app.post('/report', jsonParser, function(req, res) {
     });
 });
 
+app.post("/getCarpark", jsonParser, function(req, res) {
+    console.log("getCarpark");
+    var obj = req.body;
+    //console.log(obj);
+    MongoClient.connect(mongourl, function(err, database) {
+        const myDB = database.db('anson');
+        var cursor = myDB.collection("road").find({ "carPark.Name": obj.CarparkName });
+        var objj = [];
+        cursor.each(function(err, doc) {
+            assert.equal(err, null);
+            if (doc != null) {
+                objj.push(doc);
+            } else {
+                res.json({ result: objj });
+            }
+        });
+    });
+})
+
+
 app.post('/carpark', jsonParser, function(req, res) {
     console.log("carpark");
     var obj = req.body;
@@ -391,7 +411,7 @@ app.post('/carpark', jsonParser, function(req, res) {
 
         myDB.collection("road").update({ "carPark.Name": obj.CarparkName }, { $push: { "carPark.$.carparkNum": newObj } }, function(err3, result3) {
             assert.equal(err3, null);
-            console.log("Update report was successful!");
+            console.log("Update carPark was successful!");
             database.close();
             res.end("ok");
         })
