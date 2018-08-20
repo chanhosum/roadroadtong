@@ -1,0 +1,145 @@
+drop MATERIALIZED VIEW multimatrix.bet_by_aid_state_placed_date;
+
+drop MATERIALIZED VIEW multimatrix.bet_by_mid_aid_placed_date;
+
+drop MATERIALIZED VIEW multimatrix.bet_by_aid_placed_date;
+
+drop MATERIALIZED VIEW multimatrix.bet_by_mid_aid_state_placed_date;
+
+drop TABLE multimatrix.bet_by_market;
+
+CREATE TABLE multimatrix.bet_by_market (
+    market_id text,
+    id timeuuid,
+    account_id bigint,
+    bet_id bigint,
+    selection_id bigint,
+    sport_id bigint,
+    state int,
+    placed_date timestamp,
+    side text,
+    size decimal,
+    absolute_ex_rate decimal,
+    avg_price_matched decimal,
+    cancelled_date timestamp,
+    handicap decimal,
+    market_betting_type int,
+    matched_date timestamp,
+    original_id bigint,
+    partner_id int,
+    persistence_type text,
+    placed_ip text,
+    price decimal,
+    profit decimal,
+    risk_coefficient map<bigint, decimal>,
+    risk_detail place_order_risk_detail,
+    settled_date timestamp,
+    size_cancelled decimal,
+    size_lapsed decimal,
+    size_matched decimal,
+    size_placed decimal,
+    size_remaining decimal,
+    size_voided decimal,
+    version int,
+    status text,
+    PRIMARY KEY (market_id, id, account_id, bet_id, selection_id, sport_id, state, placed_date, side, size, status)
+) WITH CLUSTERING ORDER BY (id ASC, account_id ASC, bet_id ASC, selection_id ASC, sport_id ASC, state ASC, placed_date ASC, side ASC, size ASC, status ASC)
+    AND bloom_filter_fp_chance = 0.01
+    AND caching = {'keys': 'ALL', 'rows_per_partition': 'NONE'}
+    AND comment = ''
+    AND compaction = {'class': 'org.apache.cassandra.db.compaction.SizeTieredCompactionStrategy', 'max_threshold': '32', 'min_threshold': '4'}
+    AND compression = {'chunk_length_in_kb': '64', 'class': 'org.apache.cassandra.io.compress.LZ4Compressor'}
+    AND crc_check_chance = 1.0
+    AND dclocal_read_repair_chance = 0.1
+    AND default_time_to_live = 0
+    AND gc_grace_seconds = 864000
+    AND max_index_interval = 2048
+    AND memtable_flush_period_in_ms = 0
+    AND min_index_interval = 128
+    AND read_repair_chance = 0.0
+    AND speculative_retry = '99PERCENTILE';
+
+CREATE MATERIALIZED VIEW multimatrix.bet_by_aid_state_placed_date AS
+    SELECT *
+    FROM multimatrix.bet_by_market
+    WHERE account_id IS NOT NULL AND status IS NOT NULL AND state IS NOT NULL AND market_id IS NOT NULL AND id IS NOT NULL AND bet_id IS NOT NULL AND selection_id IS NOT NULL AND sport_id IS NOT NULL AND placed_date IS NOT NULL AND side IS NOT NULL AND size IS NOT NULL
+    PRIMARY KEY (account_id, status, state, placed_date, market_id, id, bet_id, selection_id, sport_id, side, size)
+    WITH CLUSTERING ORDER BY (status ASC, state ASC, placed_date DESC, market_id ASC, id ASC, bet_id ASC, selection_id ASC, sport_id ASC, side ASC, size ASC)
+    AND bloom_filter_fp_chance = 0.01
+    AND caching = {'keys': 'ALL', 'rows_per_partition': 'NONE'}
+    AND comment = ''
+    AND compaction = {'class': 'org.apache.cassandra.db.compaction.SizeTieredCompactionStrategy', 'max_threshold': '32', 'min_threshold': '4'}
+    AND compression = {'chunk_length_in_kb': '64', 'class': 'org.apache.cassandra.io.compress.LZ4Compressor'}
+    AND crc_check_chance = 1.0
+    AND dclocal_read_repair_chance = 0.1
+    AND default_time_to_live = 0
+    AND gc_grace_seconds = 864000
+    AND max_index_interval = 2048
+    AND memtable_flush_period_in_ms = 0
+    AND min_index_interval = 128
+    AND read_repair_chance = 0.0
+    AND speculative_retry = '99PERCENTILE';
+
+CREATE MATERIALIZED VIEW multimatrix.bet_by_mid_aid_state_placed_date AS
+    SELECT *
+    FROM multimatrix.bet_by_market
+    WHERE account_id IS NOT NULL AND status IS NOT NULL AND state IS NOT NULL AND market_id IS NOT NULL AND id IS NOT NULL AND bet_id IS NOT NULL AND selection_id IS NOT NULL AND sport_id IS NOT NULL AND placed_date IS NOT NULL AND side IS NOT NULL AND size IS NOT NULL
+    PRIMARY KEY (market_id, account_id, status, state, placed_date, id, bet_id, selection_id, sport_id, side, size)
+    WITH CLUSTERING ORDER BY (account_id ASC,status ASC, state ASC, placed_date DESC, id ASC, bet_id ASC, selection_id ASC, sport_id ASC, side ASC, size ASC)
+    AND bloom_filter_fp_chance = 0.01
+    AND caching = {'keys': 'ALL', 'rows_per_partition': 'NONE'}
+    AND comment = ''
+    AND compaction = {'class': 'org.apache.cassandra.db.compaction.SizeTieredCompactionStrategy', 'max_threshold': '32', 'min_threshold': '4'}
+    AND compression = {'chunk_length_in_kb': '64', 'class': 'org.apache.cassandra.io.compress.LZ4Compressor'}
+    AND crc_check_chance = 1.0
+    AND dclocal_read_repair_chance = 0.1
+    AND default_time_to_live = 0
+    AND gc_grace_seconds = 864000
+    AND max_index_interval = 2048
+    AND memtable_flush_period_in_ms = 0
+    AND min_index_interval = 128
+    AND read_repair_chance = 0.0
+    AND speculative_retry = '99PERCENTILE';
+
+CREATE MATERIALIZED VIEW multimatrix.bet_by_mid_aid_placed_date AS
+    SELECT *
+    FROM multimatrix.bet_by_market
+    WHERE account_id IS NOT NULL AND status IS NOT NULL AND state IS NOT NULL AND market_id IS NOT NULL AND id IS NOT NULL AND bet_id IS NOT NULL AND selection_id IS NOT NULL AND sport_id IS NOT NULL AND placed_date IS NOT NULL AND side IS NOT NULL AND size IS NOT NULL
+    PRIMARY KEY (market_id,status, account_id, placed_date, state, id, bet_id, selection_id, sport_id, side, size)
+    WITH CLUSTERING ORDER BY (status ASC, account_id ASC, placed_date DESC, state ASC, id ASC, bet_id ASC, selection_id ASC, sport_id ASC, side ASC, size ASC)
+    AND bloom_filter_fp_chance = 0.01
+    AND caching = {'keys': 'ALL', 'rows_per_partition': 'NONE'}
+    AND comment = ''
+    AND compaction = {'class': 'org.apache.cassandra.db.compaction.SizeTieredCompactionStrategy', 'max_threshold': '32', 'min_threshold': '4'}
+    AND compression = {'chunk_length_in_kb': '64', 'class': 'org.apache.cassandra.io.compress.LZ4Compressor'}
+    AND crc_check_chance = 1.0
+    AND dclocal_read_repair_chance = 0.1
+    AND default_time_to_live = 0
+    AND gc_grace_seconds = 864000
+    AND max_index_interval = 2048
+    AND memtable_flush_period_in_ms = 0
+    AND min_index_interval = 128
+    AND read_repair_chance = 0.0
+    AND speculative_retry = '99PERCENTILE';
+
+CREATE MATERIALIZED VIEW multimatrix.bet_by_aid_placed_date AS
+    SELECT *
+    FROM multimatrix.bet_by_market
+    WHERE account_id IS NOT NULL AND status IS NOT NULL AND state IS NOT NULL AND market_id IS NOT NULL AND id IS NOT NULL AND bet_id IS NOT NULL AND selection_id IS NOT NULL AND sport_id IS NOT NULL AND placed_date IS NOT NULL AND side IS NOT NULL AND size IS NOT NULL
+    PRIMARY KEY (account_id, status, placed_date, market_id, state, id, bet_id, selection_id, sport_id, side, size)
+    WITH CLUSTERING ORDER BY (status ASC, placed_date DESC, market_id ASC, state ASC, id ASC, bet_id ASC, selection_id ASC, sport_id ASC, side ASC, size ASC)
+    AND bloom_filter_fp_chance = 0.01
+    AND caching = {'keys': 'ALL', 'rows_per_partition': 'NONE'}
+    AND comment = ''
+    AND compaction = {'class': 'org.apache.cassandra.db.compaction.SizeTieredCompactionStrategy', 'max_threshold': '32', 'min_threshold': '4'}
+    AND compression = {'chunk_length_in_kb': '64', 'class': 'org.apache.cassandra.io.compress.LZ4Compressor'}
+    AND crc_check_chance = 1.0
+    AND dclocal_read_repair_chance = 0.1
+    AND default_time_to_live = 0
+    AND gc_grace_seconds = 864000
+    AND max_index_interval = 2048
+    AND memtable_flush_period_in_ms = 0
+    AND min_index_interval = 128
+    AND read_repair_chance = 0.0
+    AND speculative_retry = '99PERCENTILE';
+

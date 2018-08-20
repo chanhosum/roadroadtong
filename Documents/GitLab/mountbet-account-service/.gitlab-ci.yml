@@ -1,0 +1,113 @@
+image: docker:latest
+services:
+  - docker:dind
+
+stages:
+  - compile
+  - build
+  # - test
+  - deploy
+  # - release
+
+variables:
+  DOCKER_DRIVER: overlay2
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2"
+  CONTAINER_DEV_IMAGE: registry.gitlab.com/multimatrix/$CI_PROJECT_NAME:$CI_COMMIT_SHA
+
+maven-build:
+  image: maven:3.5-jdk-8-alpine
+  cache:
+    key: ${CI_JOB_NAME}
+    paths:
+      - .m2/
+  stage: compile
+  script:
+    - mvn -f pom.xml clean install -DskipTests=true
+#    - "mvn clean package -U"
+  artifacts:
+    expire_in: 1 week
+    when: always
+    paths:
+      - target/*.jar
+
+build_dev:
+  stage: build
+  script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
+    - docker build --pull -t $CONTAINER_DEV_IMAGE .
+    - docker push $CONTAINER_DEV_IMAGE
+  only:
+    - dev
+
+# test:
+#   stage: test
+#   script:
+#     - docker run -d --env-file=.postgres-env postgres:9.5
+#     - docker run --env-file=.environment --link=postgres:db $CONTAINER_TEST_IMAGE nosetests --with-coverage --cover-erase --cover-package=${CI_PROJECT_NAME} --cover-html
+
+###########################
+# DDDDD   EEEEEE VV     VV
+# DD  DD  EE      VV   VV
+# DD   DD EEEEEE   VV VV
+# DD  DD  EE        V V
+# DDDDD   EEEEEE     V
+#######################
+deploy_developement:
+  stage: deploy
+  image: alpine
+  script:
+    - apk add --no-cache curl
+    - curl -L -o /usr/local/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+    - chmod +x /usr/local/bin/kubectl
+    - kubectl config set-cluster nosebit --server="$KUBE_URL" --insecure-skip-tls-verify=true
+    - kubectl config set-credentials admin --username="$KUBE_USER" --password="$KUBE_PASSWORD"
+    - kubectl config set-context dev --cluster=nosebit --user=admin
+    - kubectl config use-context dev
+    - sed 's/_APP_NAME_/'"$CI_PROJECT_NAME"'/g; s/_VERSION_/'"$CI_COMMIT_SHA"'/g; s/_NAMESPACE_/'"$KUBE_NAMESPACE"'/g' kubernetes.tpl.yml > kubernetes.yml;
+    - kubectl apply -f kubernetes.yml
+  environment: development
+  only:
+    - dev
+
+deploy_staging:
+  stage: deploy
+  image: alpine
+  script:
+    - apk add --no-cache curl
+    - curl -L -o /usr/local/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+    - chmod +x /usr/local/bin/kubectl
+    - kubectl config set-cluster nosebit --server="$KUBE_URL" --insecure-skip-tls-verify=true
+    - kubectl config set-credentials admin --username="$KUBE_USER" --password="$KUBE_PASSWORD"
+    - kubectl config set-context stage --cluster=nosebit --user=admin
+    - kubectl config use-context stage
+    - sed 's/_APP_NAME_/'"$CI_PROJECT_NAME"'/g; s/_VERSION_/'"$CI_COMMIT_SHA"'/g; s/_NAMESPACE_/'"$KUBE_NAMESPACE"'/g' kubernetes.tpl.yml > kubernetes.yml;
+    - kubectl apply -f kubernetes.yml
+  environment: staging
+  only:
+    - dev
+  when: manual
+
+deploy_production:
+  stage: deploy
+  image: alpine
+  script:
+    - apk add --no-cache curl
+    - curl -L -o /usr/local/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+    - chmod +x /usr/local/bin/kubectl
+    - kubectl config set-cluster nosebit --server="$KUBE_URL" --insecure-skip-tls-verify=true
+    - kubectl config set-credentials admin --username="$KUBE_USER" --password="$KUBE_PASSWORD"
+    - kubectl config set-context prod --cluster=nosebit --user=admin
+    - kubectl config use-context prod
+    - sed 's/_APP_NAME_/'"$CI_PROJECT_NAME"'/g; s/_VERSION_/'"$CI_COMMIT_SHA"'/g; s/_NAMESPACE_/'"$KUBE_NAMESPACE"'/g' kubernetes.tpl.yml > kubernetes.yml;
+    - kubectl apply -f kubernetes.yml
+  environment: production
+  only:
+    - prod
+  when: manual
+
+# release:
+#   stage: release
+#   script:
+#     - docker pull $CONTAINER_DEV_IMAGE
+#     - docker tag $CONTAINER_DEV_IMAGE $CONTAINER_RELEASE_IMAGE
+#     - docker push $CONTAINER_RELEASE_IMAGE
